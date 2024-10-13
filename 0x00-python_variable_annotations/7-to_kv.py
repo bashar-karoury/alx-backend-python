@@ -9,6 +9,6 @@ def to_kv(k: str, v: Union[int, float]) -> Tuple[str, float]:
         The second element is the square of the int/float v and should be
         annotated as a float
     """
-    converted_int: float = float(v)
+    converted_int: float = float(v) ** 2
     result = (k, converted_int)
     return result
