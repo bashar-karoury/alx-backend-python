@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """ The basics of async """
 import random
+import asyncio
 
 
 async def wait_random(max_delay: int = 10) -> float:
@@ -8,4 +9,5 @@ async def wait_random(max_delay: int = 10) -> float:
         and wait for a random delay between 0 and max_delay
         and return it"""
     f = random.uniform(0, max_delay)
+    await asyncio.sleep(f)
     return f
