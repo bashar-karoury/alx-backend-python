@@ -3,11 +3,8 @@
  Let's execute multiple coroutines at the same time with async
 """
 import asyncio
-import importlib
 
-
-# wait_random = __import__('0-basic_async_syntax').wait_random
-module = importlib.import_module('0-basic_async_syntax')
+wait_random = __import__('0-basic_async_syntax').wait_random
 
 
 async def wait_n(n: int, max_delay: int):
