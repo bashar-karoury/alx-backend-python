@@ -12,5 +12,10 @@ async def wait_n(n: int, max_delay: int) -> list:
         function spawn wait_random n times with the specified max_delay
     """
 
-    delays = await asyncio.gather(*(wait_random(max_delay) for _ in range(n)))
+    tasks = [wait_random(i) for i in range(n)]
+    delays = []
+    # Use asyncio.as_completed() to get coroutines in the order they complete
+    for completed_task in asyncio.as_completed(tasks):
+        result = await completed_task
+        delays.append(result)
     return delays
