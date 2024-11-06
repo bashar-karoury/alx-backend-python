@@ -48,3 +48,12 @@ class TestGithubOrgClient(TestCase):
             expected_result = ['googleDocs', 'googleSlides', 'googleSheets']
             self.assertEqual(client.public_repos(), expected_result)
             mock_get_json.assert_called_once_with(returned_repor_url)
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False)
+    ])
+    def test_has_license(self, repo, license, result):
+        """ test if has_license works correctly """
+        # (repo: Dict[str, Dict], license_key: str) -> bool:
+        self.assertEqual(GithubOrgClient.has_license(repo, license), result)
