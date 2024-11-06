@@ -2,7 +2,7 @@
 """
     Test Module for client
 """
-from unittest.mock import patch
+from unittest.mock import PropertyMock, patch
 from parameterized import parameterized
 from unittest import TestCase
 from utils import access_nested_map, get_json, memoize
@@ -23,3 +23,12 @@ class TestGithubOrgClient(TestCase):
         self.assertEqual(client.org, expected)
         called_with = client.ORG_URL.format(org=client._org_name)
         mock_get_json.assert_called_once_with(called_with)
+
+    def test_public_repos_url(self):
+        """ test if org returns correct result"""
+        client = GithubOrgClient('url')
+        with patch(
+            'client.GithubOrgClient.org',
+                new_callable=PropertyMock) as mock_got:
+            mock_got.return_value = {'repos_url': 'expected_url'}
+            self.assertEqual(client._public_repos_url, 'expected_url')
