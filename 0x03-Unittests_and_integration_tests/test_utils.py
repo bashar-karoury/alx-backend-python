@@ -45,11 +45,15 @@ class TestGetJson(TestCase):
 
 
 class TestClass:
+    """ Test class to test memoize function on it"""
+
     def a_method(self):
+        """ method to be called called by a-property"""
         return 42
 
     @memoize
     def a_property(self):
+        """ method that should be memorized by the decorator"""
         return self.a_method()
 
 
