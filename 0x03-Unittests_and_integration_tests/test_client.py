@@ -65,9 +65,11 @@ class TestIntegrationGithubOrgClient(TestCase):
     """ test class to test integration of GithubOrgClient"""
 
     def setUpClass(self):
+        """ Set up test method"""
         self.get_patcher = patch('requests.get')
         self.mock_get = self.get_patcher.start()
         self.addCleanup(self.patcher.stop)
 
     def tearDownClass(self):
+        """ tear down test method"""
         self.get_patcher.stop()
