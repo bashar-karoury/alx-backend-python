@@ -64,12 +64,12 @@ class TestGithubOrgClient(TestCase):
 class TestIntegrationGithubOrgClient(TestCase):
     """ test class to test integration of GithubOrgClient"""
 
-    def setUpClass(self):
+    def setUp(self):
         """ Set up test method"""
-        self.get_patcher = patch('requestss.get')
+        self.get_patcher = patch('requests.get')
         self.mock_get = self.get_patcher.start()
         self.addCleanup(self.patcher.stop)
 
-    def tearDownClass(self):
+    def tearDown(self):
         """ tear down test method"""
         self.get_patcher.stop()
