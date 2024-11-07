@@ -2,8 +2,9 @@
 """
     Test Module for client
 """
+from fixtures import TEST_PAYLOAD
 from unittest.mock import PropertyMock, patch
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from unittest import TestCase
 from utils import access_nested_map, get_json, memoize
 from client import GithubOrgClient
@@ -57,3 +58,16 @@ class TestGithubOrgClient(TestCase):
         """ test if has_license works correctly """
         # (repo: Dict[str, Dict], license_key: str) -> bool:
         self.assertEqual(GithubOrgClient.has_license(repo, license), result)
+
+
+@parameterized_class(('org_payload', 'repos_payload', 'expected_repos', 'apache2_rep'), TEST_PAYLOAD)
+class TestIntegrationGithubOrgClient(TestCase):
+    """ test class to test integration of GithubOrgClient"""
+
+    def setUpClass(self):
+        self.get_patcher = patch('requests.get')
+        self.mock_get = self.get_patcher.start()
+        self.addCleanup(self.patcher.stop)
+
+    def tearDownClass(self):
+        self.get_patcher.stop()
