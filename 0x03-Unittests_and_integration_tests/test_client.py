@@ -3,7 +3,7 @@
     Test Module for client
 """
 from fixtures import TEST_PAYLOAD
-from unittest.mock import PropertyMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 from parameterized import parameterized, parameterized_class
 from unittest import TestCase
 from utils import access_nested_map, get_json, memoize
@@ -60,16 +60,43 @@ class TestGithubOrgClient(TestCase):
         self.assertEqual(GithubOrgClient.has_license(repo, license), result)
 
 
-@parameterized_class(('org_payload', 'repos_payload', 'expected_repos', 'apache2_rep'), TEST_PAYLOAD)
+@parameterized_class((
+    'org_payload',
+    'repos_payload',
+    'expected_repos',
+    'apache2_rep'), TEST_PAYLOAD)
 class TestIntegrationGithubOrgClient(TestCase):
     """ test class to test integration of GithubOrgClient"""
-
+    @classmethod
     def setUpClass(cls):
         """ Set up test method"""
         cls.get_patcher = patch('requests.get')
-        cls.mock_get = self.get_patcher.start()
-        cls.addCleanup(self.patcher.stop)
+        cls.mock_get = cls.get_patcher.start()
 
+    @classmethod
     def tearDownClass(cls):
         """ tear down test method"""
         cls.get_patcher.stop()
+
+    def setUp(self):
+        """Set up mock response for each test"""
+        # Mock response with repos_payload
+        mock_response_first = MagicMock()
+        mock_response_first.json.return_value = self.org_payload
+
+        mock_response_second = MagicMock()
+        mock_response_second.json.return_value = self.repos_payload
+        self.mock_get.side_effect = [mock_response_first, mock_response_second]
+        # self.mock_get.return_value = self.repos_payload
+
+    def test_public_repos(self):
+        """ test public_repos with license is None"""
+        client = GithubOrgClient(self.org_payload)
+        self.assertEqual(client.public_repos(),
+                         self.expected_repos)
+
+    def test_public_repos_with_license(self):
+        """ test public_repos with license is apache-2.0"""
+        client = GithubOrgClient(self.org_payload)
+        self.assertEqual(client.public_repos(license="apache-2.0"),
+                         self.apache2_rep)
